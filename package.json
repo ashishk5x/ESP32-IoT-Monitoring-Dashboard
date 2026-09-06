@@ -1,0 +1,12 @@
+{
+  "name": "iot-dashboard-template",
+  "version": "1.0.0",
+  "description": "Template web app IoT giám sát nhiệt độ/độ ẩm — dành cho sinh viên",
+  "scripts": {
+    "start":     "cd backend && node server.js",
+    "dev":       "cd backend && npx nodemon server.js",
+    "simulate":  "cd backend && node simulator.js",
+    "install:backend": "cd backend && npm install"
+  },
+  "private": true
+}

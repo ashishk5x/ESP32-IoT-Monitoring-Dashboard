@@ -1,0 +1,359 @@
+/* =============================================================
+   FILE: frontend/style.css
+   MỤC ĐÍCH: Giao diện dashboard IoT — đơn giản, rõ ràng,
+             phù hợp cho sinh viên mới học
+   ============================================================= */
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.header-inner h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.header-inner p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 2px;
+}
+
+/* Trạng thái kết nối server */
+.conn-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.conn-checking { background: rgba(255,255,255,0.2); }
+.conn-ok       { background: #2e7d32; color: #fff; }
+.conn-error    { background: #c62828; color: #fff; }
+
+/* ===== LAYOUT ===== */
+.container {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a237e;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e3e8f5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== CARDS ===== */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-left: 5px solid #ccc;
+    transition: transform 0.15s;
+}
+.card:hover { transform: translateY(-2px); }
+
+.card-temp   { border-left-color: #ef5350; }
+.card-humid  { border-left-color: #29b6f6; }
+.card-status { border-left-color: #66bb6a; }
+.card-time   { border-left-color: #ab47bc; }
+
+.card-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+.card-body {
+    flex: 1;
+}
+
+.card-label {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e;
+    line-height: 1;
+}
+
+.card-value-sm {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a237e;
+    line-height: 1.4;
+}
+
+.card-unit {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Màu cảnh báo nhiệt độ */
+.temp-normal { color: #2e7d32; }
+.temp-warn   { color: #f57c00; }
+.temp-danger { color: #c62828; }
+
+/* Trạng thái thiết bị */
+.status-online  { color: #2e7d32; font-weight: 700; }
+.status-offline { color: #c62828; font-weight: 700; }
+
+/* ===== ĐIỀU KHIỂN QUẠT ===== */
+.control-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.fan-status-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    color: #444;
+}
+
+.fan-icon {
+    font-size: 2rem;
+    transition: transform 0.3s;
+}
+.fan-icon.spinning {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-on  { background: #43a047; color: white; }
+.btn-on:hover  { background: #2e7d32; }
+
+.btn-off { background: #e53935; color: white; }
+.btn-off:hover { background: #b71c1c; }
+
+/* Phản hồi lệnh */
+.feedback {
+    font-size: 0.88rem;
+    padding: 8px 14px;
+    border-radius: 6px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+}
+.feedback.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #43a047; }
+.feedback.error   { background: #ffebee; color: #c62828; border-left: 4px solid #e53935; }
+.feedback.loading { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1e88e5; }
+
+/* ===== BADGE ===== */
+.badge {
+    background: #e53935;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    min-width: 22px;
+    text-align: center;
+}
+.badge:empty { display: none; }
+
+/* ===== CẢNH BÁO ===== */
+.alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.alert-item {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 16px;
+    border-left: 4px solid #ccc;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.alert-item.unread { background: #fff8e1; }
+
+.alert-item.type-high_temp      { border-left-color: #ef5350; }
+.alert-item.type-low_humidity   { border-left-color: #29b6f6; }
+.alert-item.type-device_offline { border-left-color: #757575; }
+
+.alert-message { flex: 1; font-size: 0.9rem; }
+.alert-time    { font-size: 0.78rem; color: #999; white-space: nowrap; }
+.alert-unread-dot {
+    width: 8px; height: 8px;
+    background: #e53935;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+/* ===== BẢNG DỮ LIỆU ===== */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.88rem;
+}
+
+.data-table th {
+    background: #1a237e;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.data-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+}
+
+.data-table tbody tr:hover {
+    background: #f5f7ff;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Màu lệnh */
+.cmd-fan_on  { color: #2e7d32; font-weight: 600; }
+.cmd-fan_off { color: #c62828; font-weight: 600; }
+
+/* Màu trạng thái lệnh */
+.status-sent     { color: #1565c0; }
+.status-executed { color: #2e7d32; }
+.status-failed   { color: #c62828; }
+
+/* ===== BIỂU ĐỒ ===== */
+.chart-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow-x: auto;
+}
+
+#temp-chart {
+    display: block;
+    width: 100%;
+    height: 180px;
+}
+
+.chart-hint {
+    font-size: 0.78rem;
+    color: #999;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    color: #999;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 16px;
+}
+
+/* ===== TRẠNG THÁI RỖNG / LOADING ===== */
+.empty-msg {
+    text-align: center;
+    color: #aaa;
+    padding: 20px;
+    font-style: italic;
+    font-size: 0.88rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .btn-group { flex-direction: column; }
+    .btn { width: 100%; }
+}

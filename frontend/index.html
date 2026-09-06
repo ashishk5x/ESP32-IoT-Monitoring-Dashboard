@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IoT Dashboard — Giám sát Nhiệt độ & Độ ẩm</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+    <div class="header-inner">
+        <h1>🌡️ IoT Dashboard</h1>
+        <p>Hệ thống giám sát nhiệt độ & độ ẩm — ESP32</p>
+    </div>
+    <div id="connection-status" class="conn-status conn-checking">
+        ⏳ Đang kết nối...
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- ===== CARDS: Trạng thái hiện tại ===== -->
+    <section class="section">
+        <h2 class="section-title">Trạng thái hiện tại</h2>
+        <div class="cards-grid">
+
+            <div class="card card-temp">
+                <div class="card-icon">🌡️</div>
+                <div class="card-body">
+                    <div class="card-label">Nhiệt độ</div>
+                    <div class="card-value" id="temp-value">--</div>
+                    <div class="card-unit">°C</div>
+                </div>
+            </div>
+
+            <div class="card card-humid">
+                <div class="card-icon">💧</div>
+                <div class="card-body">
+                    <div class="card-label">Độ ẩm</div>
+                    <div class="card-value" id="humid-value">--</div>
+                    <div class="card-unit">%</div>
+                </div>
+            </div>
+
+            <div class="card card-status">
+                <div class="card-icon">📡</div>
+                <div class="card-body">
+                    <div class="card-label">Trạng thái thiết bị</div>
+                    <div class="card-value" id="device-status">--</div>
+                    <div class="card-unit" id="device-name">--</div>
+                </div>
+            </div>
+
+            <div class="card card-time">
+                <div class="card-icon">🕐</div>
+                <div class="card-body">
+                    <div class="card-label">Cập nhật lúc</div>
+                    <div class="card-value-sm" id="last-updated">--</div>
+                    <div class="card-unit">thời gian thực</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== ĐIỀU KHIỂN QUẠT ===== -->
+    <section class="section">
+        <h2 class="section-title">Điều khiển quạt</h2>
+        <div class="control-panel">
+            <div class="fan-status-display">
+                <span class="fan-icon" id="fan-icon">🌀</span>
+                <span id="fan-status-text">Trạng thái quạt: --</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-on"  id="btn-fan-on"  onclick="sendFanCommand('on')">
+                    ▶ BẬT QUẠT
+                </button>
+                <button class="btn btn-off" id="btn-fan-off" onclick="sendFanCommand('off')">
+                    ■ TẮT QUẠT
+                </button>
+            </div>
+            <div id="command-feedback" class="feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== CẢNH BÁO ===== -->
+    <section class="section">
+        <h2 class="section-title">
+            Cảnh báo
+            <span id="alert-badge" class="badge"></span>
+        </h2>
+        <div id="alert-list" class="alert-list">
+            <div class="empty-msg">Đang tải...</div>
+        </div>
+    </section>
+
+    <!-- ===== LỊCH SỬ DỮ LIỆU CẢM BIẾN ===== -->
+    <section class="section">
+        <h2 class="section-title">Lịch sử dữ liệu gần nhất</h2>
+        <div class="table-wrapper">
+            <table class="data-table" id="history-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Thiết bị</th>
+                        <th>Nhiệt độ (°C)</th>
+                        <th>Độ ẩm (%)</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    <tr><td colspan="5" class="empty-msg">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== LỊCH SỬ LỆNH ĐIỀU KHIỂN ===== -->
+    <section class="section">
+        <h2 class="section-title">Lịch sử lệnh điều khiển</h2>
+        <div class="table-wrapper">
+            <table class="data-table" id="commands-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Thiết bị</th>
+                        <th>Lệnh</th>
+                        <th>Trạng thái</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody id="commands-body">
+                    <tr><td colspan="5" class="empty-msg">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== BIỂU ĐỒ ĐƠN GIẢN ===== -->
+    <section class="section">
+        <h2 class="section-title">Biểu đồ nhiệt độ (20 bản ghi gần nhất)</h2>
+        <div class="chart-wrapper">
+            <canvas id="temp-chart"></canvas>
+        </div>
+        <p class="chart-hint">* Biểu đồ đơn giản dùng Canvas API thuần — không cần thư viện ngoài</p>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>IoT Dashboard Template — dùng làm mẫu cho đồ án nhóm</p>
+    <p>Cập nhật tự động mỗi <span id="refresh-interval">10</span> giây</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
