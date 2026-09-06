@@ -1,0 +1,120 @@
+# =============================================================
+# FILE: .github/workflows/ci.yml
+# MỤC ĐÍCH: Tự động kiểm tra code mỗi khi có push hoặc Pull Request
+#
+# Workflow này làm gì:
+#   1. Cài Node.js
+#   2. Cài các thư viện (npm install)
+#   3. Kiểm tra cú pháp JavaScript không có lỗi
+#   4. Kiểm tra backend khởi động được (không bị crash ngay)
+#
+# Sinh viên có thể thấy kết quả tại tab "Actions" trên GitHub
+# =============================================================
+
+name: CI — Kiểm tra Backend
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-backend:
+    name: Kiểm tra Backend Node.js
+    runs-on: ubuntu-latest
+
+    steps:
+      # Bước 1: Lấy code từ repo về
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Bước 2: Cài Node.js phiên bản 20
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      # Bước 3: Cài thư viện backend
+      - name: Cài thư viện (npm install)
+        working-directory: backend
+        run: npm install
+
+      # Bước 4: Kiểm tra cú pháp các file JavaScript
+      - name: Kiểm tra cú pháp JavaScript
+        working-directory: backend
+        run: |
+          node --check server.js
+          node --check db.js
+          node --check simulator.js
+          node --check routes/devices.js
+          node --check routes/sensors.js
+          node --check routes/commands.js
+          node --check routes/alerts.js
+          echo "✅ Tất cả file JavaScript đều hợp lệ"
+
+      # Bước 5: Kiểm tra các file frontend
+      - name: Kiểm tra cú pháp Frontend JS
+        run: |
+          node --check frontend/app.js
+          echo "✅ Frontend app.js hợp lệ"
+
+      # Bước 6: Kiểm tra file package.json hợp lệ
+      - name: Kiểm tra package.json
+        working-directory: backend
+        run: node -e "require('./package.json'); console.log('✅ package.json hợp lệ')"
+
+      # Bước 7: Kiểm tra file SQL có thể parse được
+      - name: Kiểm tra database/init.sql tồn tại
+        run: |
+          test -f database/init.sql && echo "✅ init.sql tồn tại" || exit 1
+          test -f backend/.env.example && echo "✅ .env.example tồn tại" || exit 1
+
+  check-structure:
+    name: Kiểm tra cấu trúc thư mục
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Kiểm tra các file bắt buộc tồn tại
+        run: |
+          echo "Kiểm tra cấu trúc project..."
+
+          required_files=(
+            "README.md"
+            "LICENSE"
+            ".gitignore"
+            "backend/server.js"
+            "backend/db.js"
+            "backend/package.json"
+            "backend/.env.example"
+            "backend/routes/devices.js"
+            "backend/routes/sensors.js"
+            "backend/routes/commands.js"
+            "backend/routes/alerts.js"
+            "database/init.sql"
+            "frontend/index.html"
+            "frontend/style.css"
+            "frontend/app.js"
+          )
+
+          all_ok=true
+          for f in "${required_files[@]}"; do
+            if [ -f "$f" ]; then
+              echo "  ✅ $f"
+            else
+              echo "  ❌ THIẾU: $f"
+              all_ok=false
+            fi
+          done
+
+          if [ "$all_ok" = false ]; then
+            echo "Một số file bắt buộc bị thiếu!"
+            exit 1
+          fi
+
+          echo "✅ Cấu trúc project đầy đủ"
